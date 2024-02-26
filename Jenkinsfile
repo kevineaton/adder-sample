@@ -1,12 +1,6 @@
 pipeline {
-  agent any
-  options {
-    ansiColor('xterm')
-    disableConcurrentBuilds()
-  }
 
   stages {
-
 
     stage('build') {
       steps {
@@ -22,4 +16,3 @@ pipeline {
   }
 
 }
-// vim: ft=groovy et ai ts=2 sts=2 sw=2 nowrap
