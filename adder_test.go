@@ -14,4 +14,10 @@ func TestAddingTwoNumbers(t *testing.T) {
 	if result != expected {
 		t.Errorf("expected %d, got %d", expected, result)
 	}
+
+	expected = int64(22)
+	result = add(11, 11)
+	if result != expected {
+		t.Errorf("expected %d, got %d", expected, result)
+	}
 }
