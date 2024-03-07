@@ -1,0 +1,7 @@
+[esperanto]
+143.198.1.93
+
+[esperanto:vars]
+DOCKER_IMAGE="kevineaton/go-esperanto"
+DOCKER_IMAGE_NAME="go-esperanto"
+API_PORT=8080
