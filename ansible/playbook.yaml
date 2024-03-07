@@ -1,0 +1,59 @@
+- hosts: esperanto # host to target
+  become: true   # ensure we are root
+  vars:
+    ansible_python_interpreter: "/usr/bin/env python3" # ensure we are using python3
+
+  tasks:
+    # docker needs some special keys before running and installing
+    - name: "Add Docker GPG key"
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: "Add Docker repository"
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+        state: present
+        filename: docker
+
+    - name: "Install packages"
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      with_items:
+        - "aptitude"
+        - "software-properties-common"
+        - "apt-transport-https"
+        - "ca-certificates"
+        - "curl"
+        - "software-properties-common"
+        - "nginx"
+        - "htop"
+        - "docker-ce"
+
+    - name: Install pip
+      apt: name=python3-pip state=present
+
+    - name: Install docker package
+      pip: name=docker
+        
+    - name: Ensure file directory exists
+      file:
+        path: "/tmp/{{DOCKER_IMAGE_NAME}}"
+        state: directory
+
+    - name: Run API image
+      docker_container:
+        image: "{{DOCKER_IMAGE}}"
+        state: started
+        name: "{{DOCKER_IMAGE_NAME}}"
+        network_mode: host
+        pull: true
+        volumes:
+          - "/tmp/{{DOCKER_IMAGE_NAME}}:/tmp"
+        env:
+          # these should be pulled from a secrets manager like Vault or Infisical if they are sensitive
+          GO_EO_API_PORT={{API_PORT}}
+          
+    - name: Confirm it is running
+      shell: docker ps
